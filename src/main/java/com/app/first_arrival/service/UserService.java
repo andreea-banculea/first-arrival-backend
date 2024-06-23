@@ -47,6 +47,7 @@ public class UserService {
         newUser.setName(user.getName());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder().encode(user.getPassword()));
+        newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setLocation(user.getLocation());
         newUser.setRole(user.getRole());
         newUser.setCertification(user.getCertification());

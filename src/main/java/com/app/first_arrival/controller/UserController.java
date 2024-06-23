@@ -9,12 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
+
+    private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     public UserController(UserService userService) {
@@ -35,6 +38,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        logger.info("Received user: " + user);
         User createdUser = userService.createUser(user);
         return ResponseEntity.ok(createdUser);
     }

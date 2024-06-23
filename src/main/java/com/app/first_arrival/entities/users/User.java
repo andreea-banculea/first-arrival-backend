@@ -22,7 +22,6 @@ public class User implements Serializable {
     private String name;
 
     @Email
-    @UniqueElements
     private String email;
 
     private String phoneNumber;
