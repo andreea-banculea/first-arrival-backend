@@ -1,16 +1,13 @@
 package com.app.first_arrival.service;
 
-import com.app.first_arrival.entities.Emergency;
 import com.app.first_arrival.entities.Location;
-import com.app.first_arrival.entities.enums.EmergencyStatus;
-import com.app.first_arrival.repository.EmergencyRepository;
+import com.app.first_arrival.entities.users.User;
 import com.app.first_arrival.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -20,6 +17,8 @@ public class LocationService {
     private static final Logger logger = Logger.getLogger(LocationService.class.getName());
 
     private final LocationRepository locationRepository;
+
+    private static final double EARTH_RADIUS = 6371; // Radius in kilometers
 
     @Autowired
     public LocationService(LocationRepository locationRepository) {
@@ -42,14 +41,30 @@ public class LocationService {
     public void deleteById(Integer id) {
         locationRepository.deleteById(id);
     }
-//    public Map<Long, Location> findAllLocationsForActiveEmergencies() {
-//        List<Emergency> emergencies = emergencyRepository.findAllByStatusIn(
-//                List.of(EmergencyStatus.PENDING, EmergencyStatus.ACCEPTED)
-//        );
-//        Map<Long, Location> locationMap = new HashMap<>();
-//        emergencies.stream().filter(emergency -> emergency.getLocation() != null).forEach(emergency -> locationMap.put(emergency.getId(), emergency.getLocation()));
-//        return locationMap;
-//    }
-//
+
+    public Location update(Location location) {
+        return locationRepository.save(location);
+    }
+
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return EARTH_RADIUS * c;
+    }
+
+    public List<User> getUsersWithinRadius(double lat, double lon, double radius, List<User> users) {
+        List<User> nearbyUsers = new ArrayList<>();
+        for (User user : users) {
+            double distance = calculateDistance(lat, lon, user.getLocation().getLatitude(), user.getLocation().getLongitude());
+            if (distance <= radius) {
+                nearbyUsers.add(user);
+            }
+        }
+        return nearbyUsers;
+    }
 
 }

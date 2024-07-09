@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -46,6 +45,11 @@ public class LocationController {
     public Location createLocation(@RequestBody Location location) {
         logger.info("Received Location: " + location);
         return locationService.save(location);
+    }
+
+    @PutMapping
+    public Location updateLocation(@RequestBody Location location) {
+        return locationService.update(location);
     }
 
 

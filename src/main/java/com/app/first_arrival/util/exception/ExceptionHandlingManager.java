@@ -30,5 +30,4 @@ public class ExceptionHandlingManager {
         ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }
-
 }

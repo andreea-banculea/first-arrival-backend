@@ -1,5 +1,8 @@
 package com.app.first_arrival.security;
 
+import com.app.first_arrival.util.handlers.LoginFailureHandler;
+import com.app.first_arrival.util.handlers.LoginSuccessHandler;
+import com.app.first_arrival.util.handlers.LogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,16 +11,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailureHandler loginFailureHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, LoginSuccessHandler loginSuccessHandler, LoginFailureHandler loginFailureHandler, LogoutSuccessHandler logoutSuccessHandler) {
         this.customAuthenticationProvider = customAuthenticationProvider;
+        this.loginSuccessHandler = loginSuccessHandler;
+        this.loginFailureHandler = loginFailureHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler;
     }
 
     @Override
@@ -33,24 +41,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/users").permitAll()
+                .antMatchers("/api/locations").permitAll()
                 .antMatchers("/api/users/loggedInUser").permitAll()
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger.json").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .loginPage("http://localhost:5173/login")
                 .loginProcessingUrl("/api/login")
-                .successHandler((request, response, authentication) -> {
-                    System.out.println("Login successful for user: " + authentication.getName());
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().write("{\"message\": \"Login successful\"}");
-                })
-                .failureHandler((request, response, exception) -> {
-                    System.out.println("Login failed: " + exception.getMessage());
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("{\"message\": \"Login failed: " + exception.getMessage() + "\"}");
-                })
+                .successHandler(loginSuccessHandler)
+                .failureHandler(loginFailureHandler)
                 .and()
-                .logout().logoutUrl("/api/logout").permitAll();
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID");
     }
 
     @Bean

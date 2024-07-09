@@ -1,8 +1,8 @@
 package com.app.first_arrival.controller;
 
 import com.app.first_arrival.entities.Emergency;
-import com.app.first_arrival.service.EmergencyService;
 import com.app.first_arrival.entities.dto.EmergencyDTO;
+import com.app.first_arrival.service.EmergencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,7 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/api/emergencies")
 public class EmergencyController {
-
     private final EmergencyService emergencyService;
-
 
     private static final Logger logger = Logger.getLogger(EmergencyController.class.getName());
 
@@ -24,13 +22,14 @@ public class EmergencyController {
         this.emergencyService = emergencyService;
     }
 
-    @GetMapping
-    public List<EmergencyDTO> getAllEmergencies() {
-        return emergencyService.findAll();
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> cancelEmergency(@PathVariable Long id) {
+        emergencyService.cancelEmergencyById(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmergencyDTO> getEmergencyById(@PathVariable Long id) {
+    public ResponseEntity<Emergency> getEmergencyById(@PathVariable Long id) {
         return emergencyService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -57,12 +56,6 @@ public class EmergencyController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmergency(@PathVariable Long id) {
-        emergencyService.deleteById(id);
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("/accept/{emergencyId}")
     public ResponseEntity<Emergency> acceptEmergency(@PathVariable Long emergencyId) {
         try {
@@ -86,5 +79,11 @@ public class EmergencyController {
     @GetMapping("/hasActiveEmergency")
     public Emergency hasActiveEmergency() {
         return emergencyService.hasAnActiveEmergencyReported();
+    }
+
+    @PostMapping("/notify")
+    public ResponseEntity<String> notifyNearbyUsers(@RequestBody Emergency emergency) {
+        emergencyService.notifyNearbyUsers(emergency);
+        return ResponseEntity.ok("Notifications sent");
     }
 }

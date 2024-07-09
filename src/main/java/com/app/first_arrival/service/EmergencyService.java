@@ -5,6 +5,7 @@ import com.app.first_arrival.entities.MedicalCondition;
 import com.app.first_arrival.entities.Medication;
 import com.app.first_arrival.entities.dto.EmergencyDTO;
 import com.app.first_arrival.entities.enums.EmergencyStatus;
+import com.app.first_arrival.entities.enums.Role;
 import com.app.first_arrival.entities.users.User;
 import com.app.first_arrival.mapper.EmergencyMapper;
 import com.app.first_arrival.repository.EmergencyRepository;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmergencyService {
@@ -32,27 +32,31 @@ public class EmergencyService {
 
     private final UserRepository userRepository;
 
+    private final LocationService locationService;
+
+    private final NotificationService notificationService;
+
     private final EmergencyMapper emergencyMapper;
 
     @Autowired
-    public EmergencyService(EmergencyRepository emergencyRepository, MedicalConditionRepository medicalConditionRepository, MedicationRepository medicationRepository, UserRepository userRepository, EmergencyMapper emergencyMapper) {
+    public EmergencyService(EmergencyRepository emergencyRepository, MedicalConditionRepository medicalConditionRepository, MedicationRepository medicationRepository, UserRepository userRepository, LocationService locationService, NotificationService notificationService, EmergencyMapper emergencyMapper) {
         this.emergencyRepository = emergencyRepository;
         this.medicalConditionRepository = medicalConditionRepository;
         this.medicationRepository = medicationRepository;
         this.userRepository = userRepository;
+        this.locationService = locationService;
+        this.notificationService = notificationService;
         this.emergencyMapper = emergencyMapper;
+
     }
 
-    public List<EmergencyDTO> findAll() {
-        return emergencyRepository.findAll()
-                .stream()
-                .map(emergencyMapper::toDTO)
-                .collect(Collectors.toList());
+    public List<Emergency> findAll() {
+        return emergencyRepository.findAll();
     }
 
-    public Optional<EmergencyDTO> findById(Long id) {
-        return emergencyRepository.findById(id)
-                .map(emergencyMapper::toDTO);
+    public Optional<Emergency> findById(Long id) {
+        return emergencyRepository.findById(id);
+
     }
 
     public Emergency save(Emergency emergency) {
@@ -94,8 +98,10 @@ public class EmergencyService {
         });
     }
 
-    public void deleteById(Long id) {
-        emergencyRepository.deleteById(id);
+    public void cancelEmergencyById(Long id) {
+        Emergency emergency = emergencyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Emergency not found"));
+        emergency.setStatus(EmergencyStatus.CANCELLED);
+        emergencyRepository.save(emergency);
     }
 
     public List<Emergency> findAllEmergenciesWithStatusActive() {
@@ -151,4 +157,22 @@ public class EmergencyService {
             throw new EntityNotFoundException("User not found");
         }
     }
+
+    public void notifyNearbyUsers(Emergency emergency) {
+        double emergencyLat = emergency.getLocation().getLatitude();
+        double emergencyLon = emergency.getLocation().getLongitude();
+
+        List<User> allUsers = userRepository.findAllByRole(Role.VOLUNTEER);
+        List<User> nearbyUsers = locationService.getUsersWithinRadius(emergencyLat, emergencyLon, 1.0, allUsers);
+
+        for (User user : nearbyUsers) {
+            if (user.getId().equals(emergency.getReportedBy().getId())) {
+                continue;
+            }
+            double distance = locationService.calculateDistance(emergencyLat, emergencyLon, user.getLocation().getLatitude(), user.getLocation().getLongitude());
+            notificationService.sendNotification(user, emergency, distance);
+        }
+    }
+
+
 }

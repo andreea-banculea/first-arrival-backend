@@ -13,4 +13,8 @@ public interface EmergencyRepository extends JpaRepository<Emergency, Long> {
     List<Emergency> findAllByStatusIn(List<EmergencyStatus> statuses);
 
     Optional<Emergency> findByReportedBy_IdAndStatusIn(Long userId, List<EmergencyStatus> statuses);
+
+    List<Emergency> findAllByReportedBy_Id(Long id);
+
+    Integer countAllByStatus(EmergencyStatus status);
 }

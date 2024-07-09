@@ -40,4 +40,6 @@ public class User implements Serializable {
 
     @Nullable
     private Integer volunteerLevel;
+
+    String pushToken;
 }
