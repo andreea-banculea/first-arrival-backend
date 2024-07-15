@@ -2,10 +2,9 @@ package com.app.first_arrival.controller;
 
 import com.app.first_arrival.entities.dto.VolunteerRequest;
 import com.app.first_arrival.entities.dto.VolunteerRequestDTO;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.service.UserService;
 import com.app.first_arrival.util.helpers.TokenRequest;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

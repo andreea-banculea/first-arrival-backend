@@ -1,6 +1,6 @@
 package com.app.first_arrival.security;
 
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

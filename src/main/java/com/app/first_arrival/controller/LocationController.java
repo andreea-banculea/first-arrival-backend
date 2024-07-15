@@ -28,11 +28,6 @@ public class LocationController {
         return locationService.findAll();
     }
 
-//    @GetMapping("/active")
-//    public Map<Long, Location> getAllLocationsForActiveEmergencies() {
-//        return locationService.findAllLocationsForActiveEmergencies();
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Location> getLocationById(@PathVariable Integer id) {
         return locationService.findById(id)

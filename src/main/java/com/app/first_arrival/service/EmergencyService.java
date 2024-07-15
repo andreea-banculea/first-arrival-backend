@@ -6,7 +6,7 @@ import com.app.first_arrival.entities.Medication;
 import com.app.first_arrival.entities.dto.EmergencyDTO;
 import com.app.first_arrival.entities.enums.EmergencyStatus;
 import com.app.first_arrival.entities.enums.Role;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.mapper.EmergencyMapper;
 import com.app.first_arrival.repository.EmergencyRepository;
 import com.app.first_arrival.repository.MedicalConditionRepository;
@@ -60,7 +60,6 @@ public class EmergencyService {
     }
 
     public Emergency save(Emergency emergency) {
-//        Emergency emergency = emergencyMapper.toEntity(emergencyDTO);
         return emergencyRepository.save(emergency);
     }
 
@@ -101,6 +100,12 @@ public class EmergencyService {
     public void cancelEmergencyById(Long id) {
         Emergency emergency = emergencyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Emergency not found"));
         emergency.setStatus(EmergencyStatus.CANCELLED);
+        emergencyRepository.save(emergency);
+    }
+
+    public void resolveEmergencyById(Long id) {
+        Emergency emergency = emergencyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Emergency not found"));
+        emergency.setStatus(EmergencyStatus.RESOLVED);
         emergencyRepository.save(emergency);
     }
 
@@ -175,4 +180,10 @@ public class EmergencyService {
     }
 
 
+    public void deleteEmergencyById(Long id) {
+        if(emergencyRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("Emergency not found");
+        }
+        emergencyRepository.deleteById(id);
+    }
 }

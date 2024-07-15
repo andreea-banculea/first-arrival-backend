@@ -5,7 +5,7 @@ import com.app.first_arrival.entities.dto.VolunteerRequest;
 import com.app.first_arrival.entities.dto.VolunteerRequestDTO;
 import com.app.first_arrival.entities.enums.CertificationStatus;
 import com.app.first_arrival.entities.enums.Role;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.CertificationRepository;
 import com.app.first_arrival.repository.EmergencyRepository;
 import com.app.first_arrival.repository.UserRepository;

@@ -22,9 +22,26 @@ public class EmergencyController {
         this.emergencyService = emergencyService;
     }
 
-    @PutMapping("/{id}")
+    @GetMapping
+    public List<Emergency> getAllEmergencies() {
+        return emergencyService.findAll();
+    }
+
+    @PutMapping("/cancel/{id}")
     public ResponseEntity<Void> cancelEmergency(@PathVariable Long id) {
         emergencyService.cancelEmergencyById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmergency(@PathVariable Long id) {
+        emergencyService.deleteEmergencyById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/resolve/{id}")
+    public ResponseEntity<Void> resolveEmergency(@PathVariable Long id) {
+        emergencyService.resolveEmergencyById(id);
         return ResponseEntity.ok().build();
     }
 

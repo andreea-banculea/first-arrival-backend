@@ -2,7 +2,7 @@ package com.app.first_arrival.entities;
 
 import com.app.first_arrival.entities.enums.EmergencyStatus;
 import com.app.first_arrival.entities.enums.Severity;
-import com.app.first_arrival.entities.users.User;
+
 import javax.persistence.*;
 import lombok.Data;
 import org.springframework.lang.Nullable;

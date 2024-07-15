@@ -5,7 +5,7 @@ import com.app.first_arrival.entities.Location;
 import com.app.first_arrival.entities.MedicalCondition;
 import com.app.first_arrival.entities.Medication;
 import com.app.first_arrival.entities.dto.EmergencyDTO;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.LocationRepository;
 import com.app.first_arrival.repository.MedicalConditionRepository;
 import com.app.first_arrival.repository.MedicationRepository;

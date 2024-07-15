@@ -8,7 +8,7 @@ import com.app.first_arrival.entities.dto.TopVolunteer;
 import com.app.first_arrival.entities.enums.EmergencyStatus;
 import com.app.first_arrival.entities.enums.EmergencyTypeEnum;
 import com.app.first_arrival.entities.enums.Severity;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.EmergencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,13 +33,11 @@ public class EmergenciesStatisticsService {
     public EmergencyStatistics getEmergencyTypeStatistics() {
         List<Emergency> emergencies = emergencyRepository.findAll();
 
-        // Initialize the map with all possible emergency types and set the count to 0
         Map<EmergencyTypeEnum, Integer> emergencyTypeCount = new EnumMap<>(EmergencyTypeEnum.class);
         for (EmergencyTypeEnum type : EmergencyTypeEnum.values()) {
             emergencyTypeCount.put(type, 0);
         }
 
-        // Count occurrences of each emergency type
         for (Emergency emergency : emergencies) {
             String typeString = emergency.getEmergencyType();
             if (typeString != null) {
@@ -47,19 +45,17 @@ public class EmergenciesStatisticsService {
                     EmergencyTypeEnum type = EmergencyTypeEnum.valueOf(typeString.toUpperCase().replace(" ", "_"));
                     emergencyTypeCount.put(type, emergencyTypeCount.get(type) + 1);
                 } catch (IllegalArgumentException e) {
-                    // Handle case where the string does not match any enum constant
                     System.err.println("Unknown emergency type: " + typeString);
                 }
             }
         }
 
-        // Prepare the data for the DTO
         List<String> emergencyTypes = new ArrayList<>();
         List<Integer> data = new ArrayList<>();
         List<String> backgroundColor = generateColors(emergencyTypeCount.size());
 
         for (Map.Entry<EmergencyTypeEnum, Integer> entry : emergencyTypeCount.entrySet()) {
-            emergencyTypes.add(entry.getKey().getDisplayName());  // Add display name
+            emergencyTypes.add(entry.getKey().getDisplayName());
             data.add(entry.getValue());
         }
 
@@ -78,7 +74,6 @@ public class EmergenciesStatisticsService {
     private List<String> generateColors(int count) {
         List<String> colors = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            // Generate random colors or predefined colors
             colors.add(String.format("#%06x", (int) (Math.random() * 0xFFFFFF)));
         }
         return colors;
@@ -87,22 +82,19 @@ public class EmergenciesStatisticsService {
     public EmergencyStatistics getEmergencyStatusStatistics() {
         List<Emergency> emergencies = emergencyRepository.findAll();
 
-        // Initialize the map with all possible emergency statuses and set the count to 0
         Map<EmergencyStatus, Integer> statusCount = new EnumMap<>(EmergencyStatus.class);
         for (EmergencyStatus status : EmergencyStatus.values()) {
             statusCount.put(status, 0);
         }
 
-        // Count occurrences of each emergency status
         for (Emergency emergency : emergencies) {
             EmergencyStatus status = emergency.getStatus();
             statusCount.put(status, statusCount.get(status) + 1);
         }
 
-        // Prepare the data for the DTO
         List<String> labels = new ArrayList<>();
         List<Integer> data = new ArrayList<>();
-        List<String> backgroundColor = List.of("#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"); // Define your colors
+        List<String> backgroundColor = List.of("#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0");
 
         for (Map.Entry<EmergencyStatus, Integer> entry : statusCount.entrySet()) {
             labels.add(entry.getKey().name());
@@ -132,14 +124,12 @@ public class EmergenciesStatisticsService {
     public EmergencyStatistics getEmergencySeverityStatistics() {
         List<Emergency> emergencies = emergencyRepository.findAll();
 
-        // Initialize the map with all possible severities and set the count to 0
         Map<String, Integer> severityCount = new HashMap<>();
         for (Severity severity : Severity.values()) {
             severityCount.put(severity.toString(), 0);
         }
         severityCount.put("No data", 0);
 
-        // Count occurrences of each severity
         for (Emergency emergency : emergencies) {
             Severity severity = emergency.getSeverity();
             if (severity != null) {
@@ -150,10 +140,9 @@ public class EmergenciesStatisticsService {
             }
         }
 
-        // Prepare the data for the DTO
         List<String> labels = new ArrayList<>();
         List<Integer> data = new ArrayList<>();
-        List<String> backgroundColor = List.of("#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#A1A1A1"); // Define your colors
+        List<String> backgroundColor = List.of("#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#A1A1A1");
 
         for (Map.Entry<String, Integer> entry : severityCount.entrySet()) {
             labels.add(entry.getKey());

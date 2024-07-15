@@ -1,7 +1,7 @@
 package com.app.first_arrival.service;
 
 import com.app.first_arrival.entities.Location;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
 
-    private static final double EARTH_RADIUS = 6371; // Radius in kilometers
+    private static final double EARTH_RADIUS = 6371;
 
     @Autowired
     public LocationService(LocationRepository locationRepository) {

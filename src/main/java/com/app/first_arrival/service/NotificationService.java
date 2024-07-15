@@ -1,7 +1,7 @@
 package com.app.first_arrival.service;
 
 import com.app.first_arrival.entities.Emergency;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.app.first_arrival.emergency;
 
 import com.app.first_arrival.entities.Emergency;
 import com.app.first_arrival.entities.enums.EmergencyStatus;
-import com.app.first_arrival.entities.users.User;
+import com.app.first_arrival.entities.User;
 import com.app.first_arrival.repository.EmergencyRepository;
 import com.app.first_arrival.repository.UserRepository;
 import com.app.first_arrival.service.EmergencyService;

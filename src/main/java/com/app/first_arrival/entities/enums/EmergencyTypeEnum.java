@@ -5,7 +5,7 @@ public enum EmergencyTypeEnum {
     CHEST_PAIN("Chest Pain"),
     BREATHLESSNESS("Breathlessness"),
     UNCONSCIOUSNESS("Unconsciousness"),
-    PARALYSIS("Paralysis"),
+    SUDDEN_PARALYSIS_OR_WEAKNESS("Sudden paralysis or weakness"),
     OTHER("Other");
 
     private final String displayName;

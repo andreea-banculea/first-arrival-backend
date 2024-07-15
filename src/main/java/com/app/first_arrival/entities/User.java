@@ -1,4 +1,4 @@
-package com.app.first_arrival.entities.users;
+package com.app.first_arrival.entities;
 
 import com.app.first_arrival.entities.Certification;
 import com.app.first_arrival.entities.Location;
